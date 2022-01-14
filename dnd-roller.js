@@ -1,10 +1,8 @@
 
-// document.getElementById("inputButton").addEventListener()
+let data = [];
+let runningMean = [];
 
-var data = [];
-var runningMean = [];
-
-let loadOptions = function(event){
+const loadOptions = function(event){
 
     let defaultNum = 1;
     for(let i=1; i < 50; i++){
@@ -44,7 +42,7 @@ let loadOptions = function(event){
 
 }
 
-let roll = function(event){
+const roll = function(event){
     event.preventDefault();
 
     let num = parseInt($("#numdice").val());
@@ -81,7 +79,7 @@ let roll = function(event){
     updateStatistics();
 }
 
-let updateHistogram = function(){
+const updateHistogram = function(){
     
     let results = data.map((x)=> {return x.r});
 
@@ -108,7 +106,7 @@ let updateHistogram = function(){
     Plotly.newPlot(div, [histogram], layout, config);
 }
 
-let updateHistory = function(){
+const updateHistory = function(){
     $("#histlist").html("");
 
     let count = 0;
@@ -119,7 +117,7 @@ let updateHistory = function(){
     }
 }
 
-let updateMean = function(){
+const updateMean = function(){
     // let results = data.map((x)=>{return x.r});
 
     let trials = [];
@@ -149,7 +147,7 @@ let updateMean = function(){
     Plotly.newPlot(div, [trace], layout, config);
 }
 
-let updateStatistics = function(){
+const updateStatistics = function(){
 
     let results = data.map((x)=>{return parseInt(x.r);});
     let m = mean(results);
@@ -170,68 +168,6 @@ let updateStatistics = function(){
     $("#q4").html(quarts[4].toFixed(3));
 
     $("#iqr").html(iqr.toFixed(3));
-}
-
-// MATH FUNCITONS
-
-let mean = function(arr){
-    return arr.reduce((sum, val)=>{return sum+val;}, 0) / arr.length;
-}
-
-let stdevp = function(arr){
-    let m = mean(arr);
-
-    let stdev = Math.sqrt(arr.reduce((sum, val)=>{return sum + (val-m)*(val-m);}, 0)/arr.length);
-    return stdev;   
-}
-
-let stdevs = function(arr){
-    let m = mean(arr);
-
-    let stdev = Math.sqrt(arr.reduce((sum, val)=>{return sum + (val-m)*(val-m);}, 0)/(arr.length-1));
-    return stdev;   
-}
-
-let median = function(arr){
-    let sorted = arr;
-    sorted.sort((a,b)=>{return a-b});
-
-    if(sorted.length % 2 == 0){
-        let index = sorted.length/2;
-        return [mean([sorted[index-1], sorted[index]]), index];
-    } else{
-        let index = Math.floor(sorted.length/2);
-        return [sorted[index], index];
-    } 
-}
-
-let quartiles = function(arr){
-    let sorted = arr;
-    sorted.sort((a,b)=>{return a-b});
-
-    let q0 = sorted[0];
-    let q4 = sorted[sorted.length-1];
-
-    let [q2, q2index] = median(sorted);
-    console.log(sorted);
-
-    let lower = sorted.slice(0,q2index);
-    let upper = sorted.slice(q2index);
-    console.log(lower);
-    console.log(upper);
-
-    let [q1, q1index] = median(lower);
-    console.log(q1);
-    let [q3, q3index] = median(upper);
-
-    return [q0, q1, q2, q3, q4];
-}
-
-// generate a random integer between min (inc) and max (exc)
-let randBetween = function(min, max){
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min) + min);
 }
 
 
