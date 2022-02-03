@@ -58,3 +58,45 @@ function randBetween(min, max){
     return Math.floor(Math.random() * (max - min) + min);
 }
 
+function getPdf(numDice, typeDice, mod){
+    let dice = [];
+
+    for(let n = 0; n < numDice; n++){
+        let outcomes = [];
+        for(let d=0; d < typeDice; d++){
+            outcomes.push(d+1);
+        }
+        dice.push(outcomes);
+    }
+
+    let combos = cartesianProduct(dice);
+
+    let sums = combos.map(x => x.reduce((sum, val)=> {return sum + val}));
+
+    let sums = sums.map()
+
+    let sampleSpace = new Set(sums);
+
+    let pdf = sums.reduce( (acc, curr) => {
+        return acc[curr] ? ++acc[curr] : acc[curr] = 1, acc
+    }, {});
+
+    return pdf;
+}
+
+function cartesianProduct(arr){
+    var results = [[]];
+    for (var i = 0; i < arr.length; i++) {
+        var currentSubArray = arr[i];
+        var temp = [];
+        for (var j = 0; j < results.length; j++) {
+            for (var k = 0; k < currentSubArray.length; k++) {
+                temp.push(results[j].concat(currentSubArray[k]));
+            }
+        }
+        results = temp;
+    }
+
+    return results;
+}
+

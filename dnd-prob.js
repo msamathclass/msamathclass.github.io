@@ -29,5 +29,5 @@ const init = function(event){
 }
 
 $("#inputButton").on("click", init);
-$(document).ready(loadOptions);
+// $(document).ready(loadOptions);
 
