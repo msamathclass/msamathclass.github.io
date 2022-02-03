@@ -58,7 +58,7 @@ function randBetween(min, max){
     return Math.floor(Math.random() * (max - min) + min);
 }
 
-function getPdf(numDice, typeDice, mod){
+function getUniformPdf(numDice, typeDice, mod){
     let dice = [];
 
     for(let n = 0; n < numDice; n++){
@@ -73,14 +73,20 @@ function getPdf(numDice, typeDice, mod){
 
     let sums = combos.map(x => x.reduce((sum, val)=> {return sum + val}));
 
-    let sums = sums.map()
+    let modded = sums.map(x => {return x+mod});
 
-    let sampleSpace = new Set(sums);
+    // let sampleSpace = new Set(sums);
 
-    let pdf = sums.reduce( (acc, curr) => {
+    let pdf = modded.reduce( (acc, curr) => {
         return acc[curr] ? ++acc[curr] : acc[curr] = 1, acc
     }, {});
 
+    let norm = Object.values(pdf).reduce((sum, curr)=>{return sum + curr});
+    // console.log(norm);
+
+    for (let k of Object.keys(pdf)){
+        pdf[k] = pdf[k]/norm;
+    }
     return pdf;
 }
 

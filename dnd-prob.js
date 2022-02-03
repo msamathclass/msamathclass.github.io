@@ -1,33 +1,116 @@
-const init = function(event){
+const loadOptions = function(event){
+    // event.preventDefault();
+
+    let defaultNum = 1;
+    for(let i=1; i < 50; i++){
+        let selected = "";
+        if(i == defaultNum){
+            selected = "selected";
+        }
+
+        let option = `<option value="${i}" id="num${i}" ${selected}> ${i} </option>`;
+        $("#numdice").append(option);
+    }
+
+    let dice = [2, 4, 6, 8, 10, 12, 20, 100];
+    let defaultDie = 6;
+    
+    for(let die of dice){
+        let selected = "";
+
+        if(die == defaultDie){
+            selected = "selected";
+        }
+
+        let option = `<option value="${die}" id="d${die}" ${selected}> ${die} </option>`;
+        $("#typedice").append(option);
+    }
+
+    let defaultMod = 0;
+    for(let i=-20; i <= 20; i++){
+        let selected = "";
+
+        if(i == defaultMod){
+            selected = "selected";
+        }
+        let option = `<option value="${i}" id="mod${i}" ${selected}> ${i} </option>`;
+        $("#modifier").append(option);
+    }
+
+}
+
+const calcProb = function(event){
     event.preventDefault();
 
     let numDice = parseInt($("#numdice").val());
     let typeDice = parseInt($("#typedice").val());
     let mod = parseInt($("#modifier").val());
-    let typeProb = parseInt($("#typeprob").val());
+    let typeProb = $("#typeprob").val();
     let target = parseInt($("#target").val());
 
-    let dice = [];
+    let pdf = getUniformPdf(numDice, typeDice, mod);
 
-    for(let n = 0; n < numDice; n++){
-        let outcomes = [];
-        for(let d=0; d < typeDice; d++){
-            outcomes.push(d+1+mod);
-        }
-        dice.push(outcomes);
+    let prob = 0;
+    
+    switch(typeProb){
+        case "lt": 
+            for(let [key, value] of Object.entries(pdf)){
+                (parseInt(key) < target) ? prob += value : prob += 0;
+            }
+            break;
+        case "lte":
+            for(let [key, value] of Object.entries(pdf)){
+                (parseInt(key) <= target) ? prob += value : prob += 0;
+            }
+            break;
+        case "gt": 
+            for(let [key, value] of Object.entries(pdf)){
+                (parseInt(key) > target) ? prob += value : prob += 0;
+            }
+            break;
+        case "gte":
+            for(let [key, value] of Object.entries(pdf)){
+                (parseInt(key) >= target) ? prob += value : prob += 0;
+            }
+            break;
+        case "eq": 
+            for(let [key, value] of Object.entries(pdf)){
+                (parseInt(key) == target) ? prob += value : prob += 0;
+            }
+            break;
     }
 
-    let sampleSpace = [];
+    let outstring = `<p>The probability of rolling ${typeProb} ${target} on a ${numDice}d${typeDice}+${mod} is <b>${prob}</b></p>`;
 
-    for(let d = 0; d < dice.length; d++){
-        for(let i = 0; i < dice[d].length; i++){
-            
-        }
-    }
+    $("#output").html(outstring);
 
-    $("#outputs").html
+    updateHistogram(pdf);
 }
 
-$("#inputButton").on("click", init);
-// $(document).ready(loadOptions);
+const updateHistogram = function(pdf){
+    let event = Object.keys(pdf).map(x => {return (x)})
+    let data = {
+        x: parseInt(Object.keys(pdf)),
+        y: Object.values(pdf),
+        type: 'bar'
+    };
+
+    let div = document.getElementById('histogram');      // for some reason this doesn't work as JQuery???
+
+    let layout = { 
+
+        title: 'Probability distribution of roll',
+        bargap: 0.01,
+        font: {size: 18}
+      
+      };
+      
+      
+    let config = {responsive: true};
+
+    Plotly.newPlot(div, [data], layout, config);
+}
+
+$("#inputButton").on("click", calcProb);
+$(document).ready(loadOptions);
 
