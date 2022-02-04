@@ -51,47 +51,38 @@ const calcProb = function(event){
     let pdf = getUniformPdf(numDice, typeDice, mod);
 
     let prob = 0;
-    
-    switch(typeProb){
-        case "lt": 
-            for(let [key, value] of Object.entries(pdf)){
-                (parseInt(key) < target) ? prob += value : prob += 0;
-            }
-            break;
-        case "lte":
-            for(let [key, value] of Object.entries(pdf)){
-                (parseInt(key) <= target) ? prob += value : prob += 0;
-            }
-            break;
-        case "gt": 
-            for(let [key, value] of Object.entries(pdf)){
-                (parseInt(key) > target) ? prob += value : prob += 0;
-            }
-            break;
-        case "gte":
-            for(let [key, value] of Object.entries(pdf)){
-                (parseInt(key) >= target) ? prob += value : prob += 0;
-            }
-            break;
-        case "eq": 
-            for(let [key, value] of Object.entries(pdf)){
-                (parseInt(key) == target) ? prob += value : prob += 0;
-            }
-            break;
+
+    for(let [key, value] of Object.entries(pdf)){
+        inequality(key, target, typeProb) ? prob += value : prob += 0;
     }
 
-    let outstring = `<p>The probability of rolling ${typeProb} ${target} on a ${numDice}d${typeDice}+${mod} is <b>${prob}</b></p>`;
+    prob = Math.round(prob*1000)/10;
+
+    let inequalities = {
+        "lt": "<",
+        "lte": "≤",
+        "gt": ">",
+        "gte": "≥",
+        "eq": "="
+    };
+
+    let outstring = `<p>The probability of rolling ${inequalities[typeProb]} ${target} on a ${numDice}d${typeDice}+${mod} is <b>${prob}%</b></p>`;
 
     $("#output").html(outstring);
 
-    updateHistogram(pdf);
+    updateHistogram(pdf, target, typeProb);
+
+    updateStatistics(pdf, target, typeProb);
 }
 
-const updateHistogram = function(pdf){
-    let event = Object.keys(pdf).map(x => {return (x)})
+const updateHistogram = function(pdf, boundary, ineq){
+
+    let colors = Object.keys(pdf).map( result => {return (inequality(result, boundary, ineq) ? 'rgba(222,45,38,0.8)' : 'rgba(204,204,204,1)')});
+
     let data = {
-        x: parseInt(Object.keys(pdf)),
+        x: Object.keys(pdf),
         y: Object.values(pdf),
+        marker: {color: colors},
         type: 'bar'
     };
 
@@ -109,6 +100,21 @@ const updateHistogram = function(pdf){
     let config = {responsive: true};
 
     Plotly.newPlot(div, [data], layout, config);
+}
+
+const updateStatistics = function(pdf, boundary, ineq){
+
+    // let outString = "<tr><th>Result</th><th>Prob</th></tr>";
+    let outString = "";
+
+    for(let [x, p] of Object.entries(pdf)){
+        let color = inequality(x, boundary, ineq) ? "table-primary" : "table-active";
+        outString += `<tr class="${color}"><td>${x}</td><td>${p}</td></tr>`;
+    }
+
+    console.log(outString);
+
+    $("#stats-data").html(outString);
 }
 
 $("#inputButton").on("click", calcProb);

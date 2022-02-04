@@ -106,3 +106,20 @@ function cartesianProduct(arr){
     return results;
 }
 
+function inequality(num1, num2, ineq){
+    switch(ineq){
+        case "lt": 
+            return num1 < num2;
+        case "lte":
+            return num1 <= num2;
+        case "gt": 
+            return num1 > num2;
+        case "gte":
+            return num1 >= num2;
+        case "eq": 
+            return num1 == num2;
+        default:
+            return null;
+    }
+}
+

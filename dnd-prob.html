@@ -16,6 +16,7 @@
 
     <div class="container" id="top-div">
         <div class="row">
+
             <div class="col" id="io-div">
                 <div class="row">
                     <div class="col" id="inputs">
@@ -29,54 +30,41 @@
                                 <option value="eq"> = </option>
                                 <option value="gt"> > </option>
                                 <option value="gte"> ≥ </option>
-                            </select> <input type="number" id="target">
+                            </select> <input type="number" id="target" value="0" size="2">
                             <input class="btn btn-primary" type="submit" id="inputButton" value="Roll dice">
                             
                         </form>
                     </div>
                 </div>
+
+                <div id="output" class="row"></div>
+
+                <div class="row" id="graphs">
+                    <div class="row">
+                        <div class="col" id="histogram"></div>
+                    </div>
+                </div>
             </div>
 
-            <div id="output"></div>
-            <!--
+            
+
             <div class="col" id="statistics">
-                <table class="table table-striped" id="stats-table">
-                    <tr>
-                        <th>Mean</th>
-                        <td id="mean"></td>
-                        <th>Std. Dev.</th>
-                        <td id="stdev"></td>
-                    </tr>
-                    <tr>
-                        <th>Q0</th>
-                        <td id="q0"></td>
-                        <th>Q1</th>
-                        <td id="q1"></td>
-                    </tr>
-                    <tr>
-                        <th>Q2</th>
-                        <td id="q2"></td>
-                        <th>Q3</th>
-                        <td id="q3"></td>
-                    </tr>
-                    <tr>
-                        <th>Q4</th>
-                        <td id="q4"></td>
-                        <th>IQR</th>
-                        <td id="iqr"></td>
-                    </tr>
+                <table class="table" id="stats-table">
+                    <thead>
+                        <tr>
+                            <th>Result</th>
+                            <th>Prob</th>
+                        </tr>   
+                    </thead>
+                    <tbody id="stats-data"></tbody>
                 </table>
             </div>
         </div>        
     </div>
--->
+
     
 
-    <div class="container" id="graphs">
-        <div class="row">
-            <div class="col" id="histogram"></div>
-        </div>
-    </div>
+
 
     <!--
     <div class="container" id="history">
