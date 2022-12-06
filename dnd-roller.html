@@ -22,9 +22,10 @@
                         <p>Select number and type of dice, and modifiers</p>
                         <form id="inputForm" method="get">
                             <!-- Roll <select id="numdice"></select> d <select id="typedice"></select> + <select id="modifier"></select>, <input type="number" id="trials" value="1"> times.  -->
-                            Roll <input type="text" id="numdice" value="1" size="2"> d <select id="typedice"></select> + <input type="text" id="modifier" value="0" size="3">, <input type="number" id="trials" value="1" size="5"> times.
-                            <input class="btn btn-primary" type="submit" id="inputButton" value="Roll dice">
-                            
+                            Roll <input type="text" id="numdice" value="1" size="2"> d <select id="typedice"></select> + <input type="text" id="modifier" value="0" size="3">, <input type="number" id="trials" value="1" size="5"> times <br><br>
+                            against DC/AC <input type="text" id="dc" value="10" size="2">
+                            <input class="btn btn-primary" type="submit" id="inputButton" value="Roll dice"> 
+                                                     
                         </form>
                     </div>
                 </div>
@@ -60,17 +61,19 @@
         </div>        
     </div>
     
+    <div class="container" id="outputs">
+
+    </div>
 
     <div class="container" id="graphs">
         <div class="row">
             <div class="col" id="histogram"></div>
             <div class="col" id="mean-graph"></div>
+            <div class="col" id="rate-graph"></div>
         </div>
     </div>
 
-    <div class="container" id="history">
-        <ul id="histlist"></ul>
-    </div>
+    
 
     
     <script src="https://code.jquery.com/jquery-3.6.0.slim.js"></script>

@@ -1,6 +1,8 @@
 
 let data = [];
 let runningMean = [];
+let runningTotal = 0;
+let runningRate = []
 
 const loadOptions = function(event){
 
@@ -49,6 +51,7 @@ const roll = function(event){
     let type = parseInt($("#typedice").val());
     let mod = parseInt($("#modifier").val());
     let trials = parseInt($("#trials").val());
+    let dc = parseInt($("#dc").val());
 
     for(let n = 0; n < trials; n++){
         let unmodded = 0;
@@ -56,37 +59,52 @@ const roll = function(event){
             unmodded += randBetween(1,type+1);
         }
 
+        let result = false;
+
+        if((unmodded+mod) >= dc){ 
+            result = true; 
+            runningTotal++
+        }
+
         let outObj = {
             n: num,
             d: type,
             m: mod,
             u: unmodded,
-            r: unmodded + mod
+            r: unmodded+mod,
+            s: result
         };
 
         data.push(outObj);
 
-        runningMean.push(mean(data.map((x)=>{return x.r})));
+        runningMean.push(mean(data.map((x)=>{return (x.u+x.m)})));
+
+        runningRate.push(data.filter(x => x.s===true).length/data.length);
     }
 
-    let unmodded = data[data.length-1].r;
-    const outstring = `<p> On a ${num}d${type}+${mod}, you rolled a <b>${unmodded+mod}</b> (${unmodded}) <p><br>`;
+    let pct = runningTotal/data.length*100;
+
+    const outstring = `<b>${runningTotal} successes</b> out of ${+data.length.toFixed(2)} rolls (${pct}%) <p><br>`;
     $("#outputs").html(outstring);
 
     // updateHistory();
-    updateHistogram();
+    updateHistogram(dc);
     updateMean();
+    updateRate();
     updateStatistics();
 }
 
-const updateHistogram = function(){
+const updateHistogram = function(dc){
     
     let results = data.map((x)=> {return x.r});
-
+    // console.log(results);
+    // let colors = results.map( r => {return (r >= dc) ? 'rgba(222,45,38,0.8)' : 'rgba(204,204,204,1)'});
+    // console.log(colors);
     let histogram = {
         x: results,
         type: 'histogram',
-        histnorm: 'probability',
+        histnorm: 'count',
+        
         xbins: { size: 1 }
     };
 
@@ -97,7 +115,7 @@ const updateHistogram = function(){
         title: 'Frequency of outcomes',
         bargap: 0.01,
         font: {size: 18}
-      
+        // marker: {color: colors},
       };
       
       
@@ -118,7 +136,6 @@ const updateHistory = function(){
 }
 
 const updateMean = function(){
-    // let results = data.map((x)=>{return x.r});
 
     let trials = [];
     for(let i=0; i < runningMean.length; i++){
@@ -136,6 +153,35 @@ const updateMean = function(){
     let layout = { 
 
         title: 'Running mean by trial',
+      
+        font: {size: 18}
+      
+      };
+      
+      
+    let config = {responsive: true};
+
+    Plotly.newPlot(div, [trace], layout, config);
+}
+
+const updateRate = function(){
+
+    let trials = [];
+    for(let i=0; i < runningRate.length; i++){
+        trials.push(i);
+    }
+
+    let trace = {
+        x: trials,
+        y: runningRate,
+        type: 'scatter'
+    }
+
+    let div = document.getElementById('rate-graph');
+
+    let layout = { 
+
+        title: 'Running success rate by trial',
       
         font: {size: 18}
       
