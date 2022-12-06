@@ -170,7 +170,8 @@ const updateRate = function(){
     for(let i=0; i < runningRate.length; i++){
         trials.push(i);
     }
-
+    console.log("Test -- updateRate running");
+    
     let trace = {
         x: trials,
         y: runningRate,
