@@ -84,7 +84,7 @@ const roll = function(event){
 
     let pct = runningTotal/data.length*100;
 
-    const outstring = `<b>${runningTotal} successes</b> out of ${+data.length.toFixed(2)} rolls (${pct}%) <p><br>`;
+    const outstring = `<b>${runningTotal} successes</b> out of ${data.length} rolls (${+pct.toFixed(2)}%) <p><br>`;
     $("#outputs").html(outstring);
 
     // updateHistory();
@@ -171,7 +171,7 @@ const updateRate = function(){
         trials.push(i);
     }
     console.log("Test -- updateRate running");
-    
+
     let trace = {
         x: trials,
         y: runningRate,
