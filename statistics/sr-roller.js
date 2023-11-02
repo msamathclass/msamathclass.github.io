@@ -1,6 +1,8 @@
 
 let data = [];
 let runningMean = [];
+let runningTotal = 0;
+let runningRate = [];
 
 const loadOptions = function(event){
 
@@ -26,29 +28,39 @@ const roll = function(event){
     let hitVal = parseInt($("#hitval").val());
     let pool = parseInt($("#num").val());
     let trials = parseInt($("#trials").val());
+    let target = parseInt($("#target").val());
 
     for(let n = 0; n < trials; n++){
         let hits = 0;
         for(let i=0; i < pool; i++){
             let result = randBetween(1,typeDice+1);
-            result > hitVal ? hits += 1 : hits += 0;
+            result >= hitVal ? hits += 1 : hits += 0;
+        }
+
+        let success = false;
+        if(hits > target){
+            success = true;
+            runningTotal++;
         }
 
         let outObj = {
-            dice: typeDice,
-            hit: hitVal,
-            pool: pool,
-            hits: hits
+            d: typeDice,
+            h: hitVal,
+            p: pool,
+            n: hits,
+            s: success
         };
 
         data.push(outObj);
 
-        runningMean.push(mean(data.map((x)=>{return x.hits})));
+        runningMean.push(mean(data.map((x)=>{return x.n})));
+        runningRate.push(data.filter(x => x.s===true).length/data.length);
     }
 
-    let hits = data[data.length-1].hits;
-    const outString = `<p> Out of ${pool} ${typeDice}-sided dice, you rolled <b>${hits} hits</b> <p><br>`;
-    $("#outputs").html(outString);
+    let pct = runningTotal/data.length*100;
+    const outString1 = `<p> Out of ${pool} ${typeDice}-sided dice: <br>`;
+    const outString2 = `<p> You rolled <b>${runningTotal} hits</b> and had a <b> ${+pct.toFixed(2)}% </b> success rate.<p><br>`;
+    $("#outputs").html(outString1+outString2);
 
     // updateHistory();
     updateHistogram();

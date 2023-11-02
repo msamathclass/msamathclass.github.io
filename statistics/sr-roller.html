@@ -22,8 +22,10 @@
                         <p>Select dice pool</p>
                         <form id="inputForm" method="get">
                             <!-- Roll <select id="numdice"></select> d <select id="typedice"></select> + <select id="modifier"></select>, <input type="number" id="trials" value="1"> times.  -->
-                            Die sides: <select name="typedice" id="typedice"></select> Hit on result greater than <input type="num" id="hitval" value="4" size="2"><br>
+                            Die sides: <select name="typedice" id="typedice" value="6"></select> <br>
+                            Hit on result ≥ <input type="num" id="hitval" value="5" size="2"><br>
                             Dice Pool: <input type="number" id="num" value="10" size="2"><br>
+                            Target: <input type="number" id="target" value="4" size="2"><br>
                             Repeat <input type="number" id="trials" value="1" size="2"> times.
                             <input class="btn btn-primary" type="submit" id="inputButton" value="Roll dice">
                             
